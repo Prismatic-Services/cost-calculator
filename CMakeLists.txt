@@ -1,4 +1,4 @@
-﻿# Zach - what the fuck does this mean
+﻿# Zach - what the fun does this mean
 
 
 # CMakeList.txt : CMake project for contractor-calculator-instance, include source and define
