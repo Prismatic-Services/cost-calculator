@@ -1,13 +1,10 @@
-﻿#include "file_controller.h"
-#include "calls.h"
+﻿#include "calls.h"
 #include <iostream>
 
 
 
 int main()
 {
-
-    std::cout << management("2017-06-08") << std::endl;
-
+    std::cout << "Entrypoint" << std::endl;
     return 0;
 }
