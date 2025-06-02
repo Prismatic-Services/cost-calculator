@@ -1,4 +1,7 @@
-﻿# CMakeList.txt : CMake project for contractor-calculator-instance, include source and define
+﻿# Zach - what the fuck does this mean
+
+
+# CMakeList.txt : CMake project for contractor-calculator-instance, include source and define
 # project specific logic here.
 #
 cmake_minimum_required (VERSION 3.8)

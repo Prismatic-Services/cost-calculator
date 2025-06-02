@@ -9,30 +9,6 @@
 
 #include "utils.h"
 
-// Calculates number of full years since the given date (format: YYYY-MM-DD)
-inline int years_since(const std::string& prior_date) {
-    std::tm start_tm = {};
-    std::istringstream ss(prior_date);
-    ss >> std::get_time(&start_tm, "%Y-%m-%d");
-
-    if (ss.fail()) {
-        std::cerr << "Failed to parse date: " << prior_date << std::endl;
-        return -1;
-    }
-
-    const std::time_t now_time = std::time(nullptr);
-    const std::tm* now_tm = std::localtime(&now_time);
-
-    int years = now_tm->tm_year + 1900 - start_tm.tm_year;
-
-    if (now_tm->tm_mon < start_tm.tm_mon ||
-        (now_tm->tm_mon == start_tm.tm_mon && now_tm->tm_mday < start_tm.tm_mday)) {
-        years--;
-    }
-
-    return years - 1900;
-}
-
 // Calculates payment based on years of experience and scale
 /**
  * Calculates driver payment based on their years of experience.
