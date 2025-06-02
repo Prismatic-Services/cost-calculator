@@ -12,7 +12,8 @@ endif()
 project ("contractor-calculator-instance")
 
 # Add source to this project's executable.
-add_executable (contractor-calculator-instance "contractor-calculator-instance.cpp" "contractor-calculator-instance.h" "file_controller.h" "utils.h" "calculations.h")
+add_executable (contractor-calculator-instance "contractor-calculator-instance.cpp" "contractor-calculator-instance.h" "file_controller.h" "utils.h" "calculations.h"
+        calls.h)
 
 if (CMAKE_VERSION VERSION_GREATER 3.12)
   set_property(TARGET contractor-calculator-instance PROPERTY CXX_STANDARD 20)

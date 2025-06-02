@@ -33,37 +33,58 @@ inline int years_since(const std::string& prior_date) {
 }
 
 // Calculates payment based on years of experience and scale
+/**
+ * Calculates driver payment based on their years of experience.
+ *
+ * @param driver_start_date The date when the driver started working (format: YYYY-MM-DD).
+ * @param payment_scale A map containing the payment scales for different years of experience.
+ *                       Each key in the map should be a string representing the year range
+ *                       or a single year, and each value is the corresponding payment rate.
+ *
+ * @return The calculated driver payment based on their years of experience and the provided payment scale.
+ */
 inline double driver_payment_calculations(
     const std::string& driver_start_date,
     const std::map<std::string, double>& payment_scale)
 {
+    // Calculate the number of full years since the given date
     const int years = years_since(driver_start_date);
+
     if (years < 0) {
         return 0.0; // Invalid date or parsing error
     }
 
     for (const auto& [key, rate] : payment_scale) {
+        // Check if the key contains a range (e.g., "5-10") and is in the correct format
         if (key.find('-') != std::string::npos) {
-            // Use strtol for safe conversion
+            // Use strtol to safely convert the lower bound from string to long int
             const char* key_cstr = key.c_str();
             char* end1;
-            const long lower = std::strtol(key_cstr, &end1, 10);
+            const long lower_bound = std::strtol(key_cstr, &end1, 10);
 
             if (*end1 == '-') {
                 char* end2;
-                if (const long upper = std::strtol(end1 + 1, &end2, 10); *end2 == '\0' && years >= lower && years <= upper) {
+                // Use strtol to safely convert the upper bound from string to long int
+                const long upper_bound = std::strtol(end1 + 1, &end2, 10);
+
+                // Check if the calculated years fall within the specified range and return the corresponding payment rate
+                if (*end2 == '\0' && years >= lower_bound && years <= upper_bound) {
                     return rate;
                 }
             }
 
         } else if (key.find('+') != std::string::npos) {
+            // Check if the key contains a single year in the correct format and is greater than or equal to the calculated years
             std::string lower_str = key.substr(0, key.find('+'));
             char* end;
-            if (const long lower = std::strtol(lower_str.c_str(), &end, 10); *end == '\0' && years >= lower) {
+
+            // Check if the calculated years are greater than or equal to the single year and return the corresponding payment rate
+            if (const long lower_bound = std::strtol(lower_str.c_str(), &end, 10); *end == '\0' && years >= lower_bound) {
                 return rate;
             }
         }
     }
 
-    return 0.0; // Fallback if no match
+    // If no matching key is found in the payment scale, return a default value (0.0)
+    return 0.0;
 }
