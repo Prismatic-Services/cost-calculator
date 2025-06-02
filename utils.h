@@ -23,6 +23,19 @@ inline std::vector<std::string> split_on_delimiter(const std::vector<std::string
 	return tokens;
 }
 
+inline std::vector<std::string> split_string_on_delimiter(const std::string& str, const char delimiter) {
+	std::vector<std::string> tokens;
+
+	std::stringstream ss(str);
+	std::string token;
+
+	while (getline(ss, token, delimiter)) {
+		tokens.push_back(token);
+	}
+
+	return tokens;
+}
+
 
 inline std::string current_date() {
 	const std::time_t now = std::time(nullptr);

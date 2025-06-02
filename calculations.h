@@ -6,7 +6,8 @@
 #include <ctime>
 #include <sstream>
 #include <iomanip>
-#include <cstdlib>  // for strtol
+
+#include "utils.h"
 
 // Calculates number of full years since the given date (format: YYYY-MM-DD)
 inline int years_since(const std::string& prior_date) {
@@ -89,21 +90,119 @@ inline double driver_payment_calculations(
     return 0.0;
 }
 
-inline double pva_calculations(const std::string& year, const int& row_count) {
-    int col_idx;
+inline double maintenance_calculations(
+    const int& row_count,
+    const std::map<std::string, double>& payment_scale)
+{
+    // Calculate the number of full years since the given date
 
+    if (row_count < 0) {
+        return 0.0; // Invalid date or parsing error
+    }
 
+    for (const auto& [key, rate] : payment_scale) {
+        // Check if the key contains a range (e.g., "5-10") and is in the correct format
+        if (key.find('-') != std::string::npos) {
+            // Use strtol to safely convert the lower bound from string to long int
+            const char* key_cstr = key.c_str();
+            char* end1;
+            const long lower_bound = std::strtol(key_cstr, &end1, 10);
 
-    return 1.00;
+            if (*end1 == '-') {
+                char* end2;
+                // Use strtol to safely convert the upper bound from string to long int
+
+                // Check if the calculated row_count fall within the specified range and return the corresponding payment rate
+                if (const long upper_bound = std::strtol(end1 + 1, &end2, 10); *end2 == '\0' && row_count >= lower_bound && row_count <= upper_bound) {
+                    return rate;
+                }
+            }
+
+        } else if (key.find('+') != std::string::npos) {
+            // Check if the key contains a single year in the correct format and is greater than or equal to the calculated years
+            std::string lower_str = key.substr(0, key.find('+'));
+            char* end;
+
+            // Check if the calculated years are greater than or equal to the single year and return the corresponding payment rate
+            if (const long lower_bound = std::strtol(lower_str.c_str(), &end, 10); *end == '\0' && row_count >= lower_bound) {
+                return rate;
+            }
+        }
+    }
+
+    // If no matching key is found in the payment scale, return a default value (0.0)
+    return 0.0;
+}
+
+inline double pva_calculations(const std::vector<std::vector<std::string>>& table, const std::string& year, const int& row_count) {
+    int col_idx = 0;
+    int row_idx = 0;
+
+    for (col_idx=0; col_idx < table[0].size(); col_idx++) {
+        if (std::to_string(row_count) == table[0][col_idx]) break;
+    }
+
+    for (row_idx=0; row_idx < table.size(); row_idx++) {
+        if (table[row_idx][0] == year) break;
+    }
+
+    return std::stod(table[row_idx][col_idx]);
 }
 
 
 struct bus_metrics {
     std::string name;
-    double distance;
-    double time_driven;
+    double distance{};
+    double time_driven{};
 };
 
-//inline std::vector<bus_metrics> bus_metrics_combined() {
 
-//}
+// TODO: absolutely cooked redo ALL OF THIS
+inline std::vector<bus_metrics> bus_metrics_combined(const std::vector<std::string>& data) {
+    std::vector<bus_metrics> result;
+    bus_metrics current;
+    bool has_data = false;
+
+    for (size_t i = 0; i < data.size();) {
+        std::cout << "[DEBUG] " << data[i] << \
+            " Name: " << current.name << \
+                " Distance: " << current.distance << \
+                    " Time: " << current.time_driven << std::endl;
+
+        if (data[i] == "VehicleNumber:") {
+            if (has_data) {
+                result.push_back(current);
+                has_data = false;
+            }
+
+            // Defensive: check bounds
+            if (i + 1 < data.size()) {
+                current = {};
+                current.name = data[i + 1];
+                i += 2;
+            } else {
+                break; // malformed data
+            }
+        } else {
+            if (i + 6 <= data.size()) {
+                const std::string& start_time = data[i + 2];
+                const std::string& end_time = data[i + 3];
+                const double distance = std::stod(data[i + 4]);
+
+                current.time_driven += time_difference_minutes(end_time, start_time);
+                current.distance += distance;
+                has_data = true;
+
+                i += 6; // Move to next record
+            } else {
+                break; // incomplete record
+            }
+        }
+    }
+
+    if (has_data) {
+        result.push_back(current);
+    }
+
+    return result;
+}

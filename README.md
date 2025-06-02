@@ -6,17 +6,33 @@ Converting the Python instance to C++ for performance and efficiency
 
 ### What's been done
 * \# years since calculations
-* Driver Payment Calculations
+* Driver payment calculations
 * CSV file reading in
+* PVA table calculations
+* Reading in daily bus route data (formatting is **not** correct)
+* Maintenance table calculations
+
+### What's left to do?
+* Fuel cost calculations
+* Overall calculations
+* Totaling of values
+* Code cleanup
+* AWS deploy?
+* Dockerize instances
+* Safety checks
+* Data output
+* Data input (outside of manual feed)
 
 
 ### Data Input
 Entrypoint: `/Data`
 
-| Filename                   | Data                              |
-|----------------------------|-----------------------------------|
-| `Driver Payment Scale.csv` | Driver Hourly Pay Scale per Years |
-
+| Filename                        | Data                                     |
+|---------------------------------|------------------------------------------|
+| `Driver Payment Scale.csv`      | Driver Hourly Pay Scale per Years Worked |
+| `PVA Table.csv`                 | PVA table (row count x approval year)    |
+| `Daily Bus Routes.csv`          | Daily bus routes, times, distance, and # |
+| `Maintenance Payment Scale.csv` | Cost per mile x # of rows                | 
 
 ### CMake File Entrypoint
 ```c++
