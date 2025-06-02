@@ -19,22 +19,25 @@ inline double driver_payment(const std::string& driver_start_date){
     return driver_payment_calculations(driver_start_date, driver_payment_map);
 }
 
-// cooked to oblivion (idk what's 'going on here and I wrote it)
+
 inline std::vector<bus_metrics> bus_data() {
     const std::vector<std::string> daily_bus_route_data = readfilein("../Data/Daily Bus Routes.csv");
 
-    const std::vector<std::string> daily_bus_route_data_vector = split_on_delimiter(daily_bus_route_data, ',');
+    std::vector<std::vector<std::string>> reformatted_data;
 
-    const std::vector<bus_metrics> metrics = bus_metrics_combined(daily_bus_route_data_vector);
+    for (const std::string& line : daily_bus_route_data) {
+        std::vector<std::string> temp_line;
+        std::stringstream ss(line);
+        std::string token;
 
-    for (const auto& m : metrics) {
-        std::cout << "Vehicle Name: " << m.name << "\n";
-        std::cout << "  Total Distance Driven: " << m.distance << " km\n";
-        std::cout << "  Total Time Driven: " << m.time_driven << " minutes\n";
-        std::cout << "---------------------\n";
+        while (getline(ss, token, ',')) {
+            temp_line.push_back(token);
+        }
+
+        reformatted_data.push_back(temp_line);
     }
 
-    return metrics;
+    return bus_metrics_combined(reformatted_data);
 }
 
 
@@ -75,5 +78,8 @@ inline double management(const std::string& bus_approval_date, const std::string
 
     return management_calculations(management_payment_map, bus_approval_date, category);
 }
+
+
+
 
 #endif //CALLS_H

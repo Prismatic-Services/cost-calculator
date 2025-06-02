@@ -133,51 +133,24 @@ struct bus_metrics {
 };
 
 
-// TODO: absolutely cooked redo ALL OF THIS
-inline std::vector<bus_metrics> bus_metrics_combined(const std::vector<std::string>& data) {
+inline std::vector<bus_metrics> bus_metrics_combined(const std::vector<std::vector<std::string>>& data) {
     std::vector<bus_metrics> result;
     bus_metrics current;
-    bool has_data = false;
 
-    for (size_t i = 0; i < data.size();) {
-        std::cout << "[DEBUG] " << data[i] << \
-            " Name: " << current.name << \
-                " Distance: " << current.distance << \
-                    " Time: " << current.time_driven << std::endl;
-
-        if (data[i] == "VehicleNumber:") {
-            if (has_data) {
-                result.push_back(current);
-                has_data = false;
-            }
-
-            // Defensive: check bounds
-            if (i + 1 < data.size()) {
-                current = {};
-                current.name = data[i + 1];
-                i += 2;
-            } else {
-                break; // malformed data
-            }
+    for (const std::vector<std::string>& line : data) {
+        if (line[0].find("VehicleNumber") != std::string::npos) {
+            // found
+            result.push_back(current);
+            current = {
+                "Unknown",
+                0.00,
+                0.00
+            };
         } else {
-            if (i + 6 <= data.size()) {
-                const std::string& start_time = data[i + 2];
-                const std::string& end_time = data[i + 3];
-                const double distance = std::stod(data[i + 4]);
-
-                current.time_driven += time_difference_minutes(end_time, start_time);
-                current.distance += distance;
-                has_data = true;
-
-                i += 6; // Move to next record
-            } else {
-                break; // incomplete record
-            }
+            current.name = line[0];
+            current.time_driven += time_difference_minutes(line[2], line[3]);
+            current.distance += std::stod(line[4]);
         }
-    }
-
-    if (has_data) {
-        result.push_back(current);
     }
 
     return result;

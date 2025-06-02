@@ -8,6 +8,7 @@
 #include <iomanip>
 #include <map>
 #include <chrono>
+#include <iostream>
 
 
 // Calculates number of full years since the given date (format: YYYY-MM-DD)
