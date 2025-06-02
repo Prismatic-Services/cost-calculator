@@ -42,7 +42,7 @@ int main()
 ```
 
 ### Calculation Functions
-All calculation functions can be found under `/calculations.h` and defined returning a `double` data type.
+All calculation functions can be found under `/calculations.h` and defined returning a `double` data type
 ```c++
 // ExAMPLE
 inline double driver_payment_calculations(
