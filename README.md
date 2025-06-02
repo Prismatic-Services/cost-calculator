@@ -2,6 +2,8 @@
 
 Converting the Python instance to C++ for performance and efficiency
 
+![Diagram Image](./pris-contractor-calculator-diagram.png)
+
 ### What's been done
 * \# years since calculations
 * Driver Payment Calculations

@@ -88,3 +88,22 @@ inline double driver_payment_calculations(
     // If no matching key is found in the payment scale, return a default value (0.0)
     return 0.0;
 }
+
+inline double pva_calculations(const std::string& year, const int& row_count) {
+    int col_idx;
+
+
+
+    return 1.00;
+}
+
+
+struct bus_metrics {
+    std::string name;
+    double distance;
+    double time_driven;
+};
+
+//inline std::vector<bus_metrics> bus_metrics_combined() {
+
+//}

@@ -48,4 +48,24 @@ inline std::map<std::string, double> csv_to_map(const std::vector<std::string>& 
 	return return_map;
 }
 
+inline int time_difference_minutes(const std::string& time1, const std::string& time2) {
+	std::tm tm1 = {}, tm2 = {};
+
+	std::istringstream ss1(time1);
+	ss1 >> std::get_time(&tm1, "%I:%M %p");
+
+	std::istringstream ss2(time2);
+	ss2 >> std::get_time(&tm2, "%I:%M %p");
+
+	// Ensure both time structures have the same date for comparison
+	tm1.tm_mday = tm2.tm_mday = 1;
+	tm1.tm_mon = tm2.tm_mon = 0;
+	tm1.tm_year = tm2.tm_year = 100; // Year 2000
+
+	time_t t1 = mktime(&tm1);
+	time_t t2 = mktime(&tm2);
+
+	return static_cast<int>(difftime(t2, t1) / 60);
+}
+
 #endif
