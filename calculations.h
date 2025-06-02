@@ -206,3 +206,41 @@ inline std::vector<bus_metrics> bus_metrics_combined(const std::vector<std::stri
 
     return result;
 }
+
+
+inline double management_calculations(const std::map<std::string, double>& scale, const std::string& bus_approval_date, const std::string& category = "") {
+        const std::chrono::sys_days date = parse_yyyy_mm_dd(bus_approval_date);
+
+        for (const auto& entry : scale) {
+            const std::string& key = entry.first;
+            const double& value = entry.second;
+
+            if (key.find('-') != std::string::npos) {
+                const std::size_t pos = key.find('-');
+                std::string start_str = key.substr(0, pos);
+                std::string end_str = key.substr(pos + 1);
+                std::chrono::sys_days start_date = parse_ddMMyyyy(start_str);
+
+                if (std::chrono::sys_days end_date = parse_ddMMyyyy(end_str); date >= start_date && date <= end_date) {
+                    return value;
+                }
+            }
+            else if (key.starts_with("<")) {
+                if (std::chrono::sys_days cutoff_date = parse_ddMMyyyy(key.substr(1)); date < cutoff_date) {
+                    return value;
+                }
+            }
+            else if (key.starts_with(">")) {
+                if (const std::chrono::sys_days cutoff_date = parse_ddMMyyyy(key.substr(1)); date > cutoff_date) {
+                    return value;
+                }
+            }
+            else if (key.starts_with(category + ">")) {
+                if (const std::chrono::sys_days cutoff_date = parse_ddMMyyyy(key.substr(category.size() + 1)); date > cutoff_date) {
+                    return value;
+                }
+            }
+        }
+
+        return -1.00; // No match
+}

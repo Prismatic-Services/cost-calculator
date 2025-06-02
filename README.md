@@ -11,6 +11,7 @@ Converting the Python instance to C++ for performance and efficiency
 * PVA table calculations
 * Reading in daily bus route data (formatting is **not** correct)
 * Maintenance table calculations
+* Management table calculations (regular/special bus evaluations included)
 
 ### What's left to do?
 * Fuel cost calculations
@@ -21,18 +22,19 @@ Converting the Python instance to C++ for performance and efficiency
 * Dockerize instances
 * Safety checks
 * Data output
-* Data input (outside of manual feed)
+* Data input (other than manual feed)
 
 
 ### Data Input
 Entrypoint: `/Data`
 
-| Filename                        | Data                                     |
-|---------------------------------|------------------------------------------|
-| `Driver Payment Scale.csv`      | Driver Hourly Pay Scale per Years Worked |
-| `PVA Table.csv`                 | PVA table (row count x approval year)    |
-| `Daily Bus Routes.csv`          | Daily bus routes, times, distance, and # |
-| `Maintenance Payment Scale.csv` | Cost per mile x # of rows                | 
+| Filename                        | Data                                               |
+|---------------------------------|----------------------------------------------------|
+| `Driver Payment Scale.csv`      | Driver Hourly Pay Scale per Years Worked           |
+| `PVA Table.csv`                 | PVA table (row count x approval year)              |
+| `Daily Bus Routes.csv`          | Daily bus routes, times, distance, and #           |
+| `Maintenance Payment Scale.csv` | Cost per mile x # of rows                          | 
+| `Management Payment Scale.csv`  | approval date -> flat fee *note unique formatting* |
 
 ### CMake File Entrypoint
 ```c++

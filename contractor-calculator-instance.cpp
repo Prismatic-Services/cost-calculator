@@ -7,7 +7,7 @@
 int main()
 {
 
-    std::cout << maintenance(13) << std::endl;
+    std::cout << management("2017-06-08") << std::endl;
 
     return 0;
 }

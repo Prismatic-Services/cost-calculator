@@ -66,4 +66,13 @@ inline double maintenance(const int& row_count) {
     return maintenance_calculations(row_count, maintenance_payment_map);
 }
 
+inline double management(const std::string& bus_approval_date, const std::string& category = "") {
+    const std::vector<std::string> management_payment_scale = readfilein("../Data/Management Payment Scale.csv");
+
+    const std::vector<std::string> management_payment_scale_vector = split_on_delimiter(management_payment_scale, ',');
+    const std::map<std::string, double> management_payment_map = csv_to_map(management_payment_scale_vector);
+
+    return management_calculations(management_payment_map, bus_approval_date, category);
+}
+
 #endif //CALLS_H

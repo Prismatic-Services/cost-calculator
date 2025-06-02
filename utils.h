@@ -7,6 +7,7 @@
 #include <ctime>
 #include <iomanip>
 #include <map>
+#include <chrono>
 
 
 inline std::vector<std::string> split_on_delimiter(const std::vector<std::string>& data, const char delimiter) {
@@ -81,4 +82,27 @@ inline int time_difference_minutes(const std::string& time1, const std::string& 
 	return static_cast<int>(difftime(t2, t1) / 60);
 }
 
+inline std::chrono::sys_days parse_ddMMyyyy(const std::string& date_str) {
+	std::istringstream ss(date_str);
+	int d, m, y;
+	ss >> std::setw(2) >> d >> std::setw(2) >> m >> std::setw(4) >> y;
+	return std::chrono::sys_days{
+		std::chrono::year{y} /
+		std::chrono::month{static_cast<unsigned>(m)} /
+		std::chrono::day{static_cast<unsigned>(d)}
+	};
+}
+
+
+inline std::chrono::sys_days parse_yyyy_mm_dd(const std::string& date_str) {
+	std::istringstream ss(date_str);
+	int y, m, d;
+	char sep1, sep2;
+	ss >> y >> sep1 >> m >> sep2 >> d;
+	return std::chrono::sys_days{
+		std::chrono::year{y} /
+		std::chrono::month{static_cast<unsigned>(m)} /
+		std::chrono::day{static_cast<unsigned>(d)}
+	};
+}
 #endif
