@@ -79,6 +79,26 @@ inline double management(const std::string& bus_approval_date, const std::string
     return management_calculations(management_payment_map, bus_approval_date, category);
 }
 
+inline std::vector<std::vector<std::string>> buses_and_drivers() {
+    const std::vector<std::string> file = readfilein("../Data/Buses amd Drivers.csv");
+
+    std::vector<std::vector<std::string>> reformatted_data;
+
+    for (const std::string& line : file) {
+        std::vector<std::string> temp_line;
+        std::stringstream ss(line);
+        std::string token;
+
+        while (getline(ss, token, ',')) {
+            temp_line.push_back(token);
+        }
+
+        reformatted_data.push_back(temp_line);
+    }
+
+    return reformatted_data;
+}
+
 
 
 
