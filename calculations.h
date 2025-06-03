@@ -6,6 +6,8 @@
 #include <ctime>
 #include <sstream>
 #include <iomanip>
+#include <ranges>
+#include <unordered_map>
 
 #include "utils.h"
 
@@ -133,24 +135,30 @@ struct bus_metrics {
 };
 
 
+// fix this half of this was lowk llama3.1 and a dream
 inline std::vector<bus_metrics> bus_metrics_combined(const std::vector<std::vector<std::string>>& data) {
-    std::vector<bus_metrics> result;
+    std::unordered_map<std::string, bus_metrics> metrics_map;
     bus_metrics current;
 
     for (const std::vector<std::string>& line : data) {
         if (line[0].find("VehicleNumber") != std::string::npos) {
-            // found
-            result.push_back(current);
-            current = {
-                "Unknown",
-                0.00,
-                0.00
-            };
+            current = { "Unknown", 0.0, 0.0 };
         } else {
-            current.name = line[0];
-            current.time_driven += time_difference_minutes(line[2], line[3]);
-            current.distance += std::stod(line[4]);
+            std::string name = line[0];
+            const double time = time_difference_minutes(line[2], line[3]);
+            const double dist = std::stod(line[4]);
+
+            auto& entry = metrics_map[name];
+            entry.name = name;
+            entry.time_driven += time;
+            entry.distance += dist;
         }
+    }
+
+    // Convert map to vector
+    std::vector<bus_metrics> result;
+    for (const auto &metrics: metrics_map | std::views::values) {
+        result.push_back(metrics);
     }
 
     return result;
