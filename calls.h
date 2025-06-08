@@ -80,7 +80,7 @@ inline double management(const std::string& bus_approval_date, const std::string
 }
 
 inline std::vector<std::vector<std::string>> buses_and_drivers() {
-    const std::vector<std::string> file = readfilein("../Data/Buses amd Drivers.csv");
+    const std::vector<std::string> file = readfilein("../Data/Buses and Drivers.csv");
 
     std::vector<std::vector<std::string>> reformatted_data;
 
