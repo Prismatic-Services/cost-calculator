@@ -43,7 +43,6 @@ inline std::vector<bus_metrics> bus_data() {
 
 inline double pva(const std::string& year, const int& row_count) {
     const std::vector<std::string> pva_table = readfilein("../Data/PVA Table.csv");
-
     std::vector<std::vector<std::string>> reformatted_data;
 
     for (const std::string& line : pva_table) {

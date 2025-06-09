@@ -6,6 +6,8 @@
 #include <vector>
 
 
+// Resource Acquisition Is Initialization = RAII (phrase)
+
 inline std::vector<std::string> readfilein(const std::string& filename) {
 	std::vector<std::string> returned;
 	std::ifstream inputfile(filename);  // RAII: opens file in constructor
@@ -17,7 +19,7 @@ inline std::vector<std::string> readfilein(const std::string& filename) {
 
 	std::string line;
 	while (std::getline(inputfile, line)) {
-		returned.push_back(std::move(line));  // optional: avoids copy
+		returned.push_back(std::move(line));  // optional - avoids copy
 	}
 
 	return returned;
@@ -26,9 +28,8 @@ inline std::vector<std::string> readfilein(const std::string& filename) {
 inline void append_line_to_file(const std::string& filename, const std::string& line) {
 	if (std::ofstream file(filename, std::ios::app); file.is_open()) {
 		file << line << '\n'; // Append the line followed by a newline
-		file.close(); // Close the file
+		file.close();
 	} else {
-		// Optionally handle error
 		throw std::runtime_error("Failed to open file: " + filename);
 	}
 }

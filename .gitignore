@@ -3,3 +3,4 @@
 /.vs
 /Data
 /cmake-build-debug
+/server/.venv

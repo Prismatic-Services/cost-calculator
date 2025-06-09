@@ -7,12 +7,13 @@
 #include <sstream>
 #include <iomanip>
 #include <ranges>
+#include <stdexcept>
 #include <unordered_map>
 
 #include "utils.h"
 
 // Calculates payment based on years of experience and scale
-/**
+/** TODO: do this for ALL functions
  * Calculates driver payment based on their years of experience.
  *
  * @param driver_start_date The date when the driver started working (format: YYYY-MM-DD).
@@ -70,15 +71,20 @@ inline double driver_payment_calculations(
 
 inline double maintenance_calculations(
     const int& row_count,
-    const std::map<std::string, double>& payment_scale)
+    const std::map<std::string, double>& maintenance_scale)
 {
-    // Calculate the number of full years since the given date
-
     if (row_count < 0) {
         return 0.0; // Invalid date or parsing error
     }
 
-    for (const auto& [key, rate] : payment_scale) {
+
+
+    for (const auto& [key, rate] : maintenance_scale) {
+        if (key == std::to_string(row_count)) {
+            return rate;
+
+        }
+
         // Check if the key contains a range (e.g., "5-10") and is in the correct format
         if (key.find('-') != std::string::npos) {
             // Use strtol to safely convert the lower bound from string to long int
@@ -108,23 +114,49 @@ inline double maintenance_calculations(
         }
     }
 
+    std::cout << "No match: " << row_count << std::endl;
     // If no matching key is found in the payment scale, return a default value (0.0)
     return 0.0;
 }
 
 inline double pva_calculations(const std::vector<std::vector<std::string>>& table, const std::string& year, const int& row_count) {
-    int col_idx = 0;
-    int row_idx = 0;
-
-    for (col_idx=0; col_idx < table[0].size(); col_idx++) {
-        if (std::to_string(row_count) == table[0][col_idx]) break;
+    if (table.empty() || table[0].empty()) {
+        throw std::invalid_argument("Table is empty or improperly formatted.");
     }
 
-    for (row_idx=0; row_idx < table.size(); row_idx++) {
-        if (table[row_idx][0] == year) break;
+    int col_idx = -1;
+    int row_idx = -1;
+
+    // Find column index that matches row_count
+    for (int i = 0; i < table[0].size(); ++i) {
+        if (table[0][i] == std::to_string(row_count)) {
+            col_idx = i;
+            break;
+        }
     }
 
-    return std::stod(table[row_idx][col_idx]);
+    if (col_idx == -1) {
+        throw std::invalid_argument("Column matching row_count not found.");
+    }
+
+    // Find row index that matches year
+    for (int i = 0; i < table.size(); ++i) {
+        if (table[i][0] == year) {
+            row_idx = i;
+            break;
+        }
+    }
+
+    if (row_idx == -1) {
+        throw std::invalid_argument("Row matching year not found.");
+    }
+
+    // Final value conversion
+    try {
+        return std::stod(table[row_idx][col_idx]);
+    } catch (const std::exception& e) {
+        throw std::runtime_error("Conversion to double failed: " + std::string(e.what()));
+    }
 }
 
 

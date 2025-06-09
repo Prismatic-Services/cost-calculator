@@ -8,8 +8,13 @@
 #include <iomanip>
 #include <map>
 #include <chrono>
+#include <cmath>
 #include <iostream>
 
+
+inline double truncateToTwoDecimalPlaces(const double value) {
+	return std::floor(value * 100.0) / 100.0;
+}
 
 // Calculates number of full years since the given date (format: YYYY-MM-DD)
 inline int years_since(const std::string& prior_date) {
