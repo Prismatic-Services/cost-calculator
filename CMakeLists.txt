@@ -14,9 +14,16 @@ endif()
 
 project ("contractor-calculator-instance")
 
-# Add source to this project's executable.
-add_executable (contractor-calculator-instance "contractor-calculator-instance.cpp" "file_controller.h" "utils.h" "calculations.h"
-        calls.h)
+add_executable(contractor-calculator-instance
+        "contractor-calculator-instance.cpp"
+        "file_controller.h"
+        "utils.h"
+        "calculations.h"
+        "calls.h")
+
+# Apply static runtime on the target directly (this works)
+set_property(TARGET contractor-calculator-instance PROPERTY
+        MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
 
 if (CMAKE_VERSION VERSION_GREATER 3.12)
   set_property(TARGET contractor-calculator-instance PROPERTY CXX_STANDARD 20)

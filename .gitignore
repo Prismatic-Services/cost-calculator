@@ -3,4 +3,9 @@
 /.vs
 /Data
 /cmake-build-debug
-/server/.venv
+/backend/.venv
+/frontend/node_modules
+/frontend/.idea
+/frontend/package-lock.json
+/backend/.idea
+/frontend/.next

@@ -1,0 +1,4 @@
+flask
+pandas
+flask-cors
+py-dateinfer
